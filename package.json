@@ -1,0 +1,23 @@
+{
+  "name": "portfolio-mapper",
+  "version": "0.1.0",
+  "description": "how much of the standard had been covered in an apprentices portfolio?",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "portfolio",
+    "standards"
+  ],
+  "author": "bmordan",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "node-fetch": "^2.6.0",
+    "pug": "^2.0.4"
+  }
+}

@@ -1,0 +1,22 @@
+html
+    head
+        title Portfolio Mapper
+        meta(name="google-signin-client_id" content=client_id)
+        script(src="https://apis.google.com/js/platform.js" async defer)
+        script.
+            function onSignIn(googleUser) {
+                const id_token = googleUser.getAuthResponse().id_token
+                window.location.replace(`/auth/${id_token}`)
+            }
+            function signOut() {
+                gapi.load('auth2', () => {
+                    const client_id = document.querySelector('meta[name="google-signin-client_id"]').content
+                    
+                    gapi.auth2.init({client_id})
+                        .then(googleUser => {
+                            googleUser.signOut().then(() => window.location.replace("/"))
+                        })
+                })
+            }
+    body
+        block content
