@@ -1,0 +1,10 @@
+extends layout.pug
+
+block content
+    .container
+        form(action="/standards" method="POST")
+            .form-group
+                label(for='new-standard') Add a standard
+                input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='Title for the standard you are adding' name='standard')
+                small#new-standard-help.form-text.text-muted You will add the competencies in the next step
+            button.btn.btn-primary Add

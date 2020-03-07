@@ -1,12 +1,17 @@
 html
     head
         title Portfolio Mapper
+        link(rel="stylesheet" href="/custom-css-bootstrap-magic-2020-03-07.css")
+        script(src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous")
+        script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous")
         meta(name="google-signin-client_id" content=client_id)
         script(src="https://apis.google.com/js/platform.js" async defer)
         script.
             function onSignIn(googleUser) {
+                console.log(googleUser)
                 const id_token = googleUser.getAuthResponse().id_token
-                window.location.replace(`/auth/${id_token}`)
+                window.location.assign(`/cohorts/${id_token}`)
             }
             function signOut() {
                 gapi.load('auth2', () => {
@@ -14,9 +19,16 @@ html
                     
                     gapi.auth2.init({client_id})
                         .then(googleUser => {
-                            googleUser.signOut().then(() => window.location.replace("/"))
+                            googleUser.signOut()
+                                .then(() => {
+                                    console.log('signed out')
+                                    return window.location.assign('/logout')
+                                })
+                                .catch(console.error)
                         })
+                        .catch(console.error)
                 })
             }
     body
+        include includes/navbar
         block content

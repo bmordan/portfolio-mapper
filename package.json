@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "NODE_ENV=development nodemon server.js",
-    "test": "jest"
+    "test": "jest --watchAll"
   },
   "keywords": [
     "portfolio",
@@ -19,5 +19,8 @@
     "express-session": "^1.17.0",
     "node-fetch": "^2.6.0",
     "pug": "^2.0.4"
+  },
+  "devDependencies": {
+    "jest": "^25.1.0"
   }
 }

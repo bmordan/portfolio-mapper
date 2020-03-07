@@ -1,7 +1,12 @@
 extends layout.pug
 
 block content
-    h1 Portfolio Mapper
-    p Lets go
-    .g-signin2(data-onsuccess="onSignIn")
-    button(onclick="signOut()") Signout
+    .container
+        .jumbotron.jumbotron-fluid
+        h1.display-4 Hello coach!
+        p.lead
+            | Tracking portfolios? We got your back.
+        hr.my-4
+        p
+            | Portfolio mapper can help you. You will need to have your apprentices create their portfolios in a google doc on google drive and have them share it with you. Grab the fileId (I'll explain later) and then annotate their work indicating when they have a valid piece of evidence for a competency in the standard. This tool gives you an overview of all your cohorts, all your apprentices and their progress to EPA gateway.
+        .g-signin2.mt-4(data-onsuccess="onSignIn")
