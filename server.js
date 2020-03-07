@@ -1,17 +1,38 @@
 require('dotenv').config()
 const express = require('express')
 const session = require('express-session')
+const Sequelize = require('sequelize')
 const fetch = require('node-fetch')
 const app = express()
 const User = require('./lib/User')
+const createModels = require('./lib/Models')
 
-const {GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NODE_ENV} = process.env
+const {
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    NODE_ENV,
+    MYSQL_DATABASE,
+    MYSQL_USER,
+    MYSQL_PASSWORD
+} = process.env
+
 
 const session_settings = {
     secret: GOOGLE_CLIENT_SECRET,
     resave: false,
     saveUninitialized: true
 }
+
+const sequelize_settings = {
+    host: 'localhost',
+    dialect: 'mariadb'
+}
+
+const datastore = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, sequelize_settings)
+const {
+    Standard,
+    Competency
+} = createModels(datastore)
 
 app.set('view engine', 'pug')
 app.use(express.urlencoded({ extended: true }))
@@ -48,12 +69,10 @@ function protect (req, res, next) {
     !req.session.user ? res.redirect('/') : next()
 }
 
-function protect (req, res, next) {
-    next()
-}
-
 app.get('/', (req, res) => {
-    res.render('login', {client_id: GOOGLE_CLIENT_ID})
+    req.session.user
+        ? res.redirect('/cohorts')
+        : res.render('login', {client_id: GOOGLE_CLIENT_ID})
 })
 
 app.get('/cohorts/:id_token', (req, res) => {
@@ -72,13 +91,76 @@ app.get('/cohorts', protect, (req, res) => {
     res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID})
 })
 
-app.get('/standards', protect, (req, res) => {
-    res.render('standards', {user: req.session.user, client_id: GOOGLE_CLIENT_ID})
+app.post('/standards', protect, async (req, res) => {
+    const standard = await Standard.create(req.body)
+    res.render('standard', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standard: standard,
+        competencies: []
+    })
+}) 
+
+app.get('/standards/:id/delete', protect, (req, res) => {
+    Standard.findByPk(req.params.id)
+        .then(standard => standard.destroy())
+        .then(() => Standard.findAll())
+        .then(standards => {
+            res.render('standards', {
+                user: req.session.user,
+                client_id: GOOGLE_CLIENT_ID,
+                standards: standards
+            })
+        })
+        .catch(err => {
+            res.send(err)
+        })
 })
 
-app.post('/standards', (req, res) => {
-    console.log(req.body)
-    res.render('standards', {user: req.session.user, client_id: GOOGLE_CLIENT_ID})
+app.get(['/standards/:id', '/standards/:id/competencies'], protect, async (req, res) => {
+    const standard = await Standard.findByPk(req.params.id)
+    const competencies = await standard.getCompetencies()
+    res.render('standard', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standard: standard,
+        competencies: competencies
+    }) 
+})
+
+app.get('/standards', protect, async (req, res) => {
+    const standards = await Standard.findAll()
+    res.render('standards', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standards: standards
+    })
+})
+
+app.post('/standards/:id/competencies', async (req, res) => {
+    const standard = await Standard.findByPk(req.params.id)
+    const competency = await Competency.create(req.body)
+    await standard.addCompetency(competency)
+    const competencies = await standard.getCompetencies()
+    res.render('standard', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standard: standard,
+        competencies: competencies
+    })
+})
+
+app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, async (req, res) => {
+    const competency = await Competency.findByPk(req.params.comptency_id)
+    await competency.destroy()
+    const standard = await Standard.findByPk(req.params.standard_id)
+    const competencies = await standard.getCompetencies()
+    res.render('standard', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standard: standard,
+        competencies: competencies
+    })
 })
 
 app.get('/logout', (req, res) => {
@@ -86,6 +168,8 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-app.listen(3000, () => {
-    console.log(`Portfolio Mapper running...`)
+datastore.sync().then(() => {
+    app.listen(3000, () => {
+        console.log(`Portfolio Mapper running...`)
+    })
 })

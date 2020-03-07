@@ -1,10 +1,17 @@
 extends layout.pug
 
 block content
+    .container.mb-4
+        ul.list-group.my-4
+        each standard in standards
+            li.list-group-item.d-flex.justify-content-between.align-items-center
+                a(href=`/standards/${standard.id}`)=standard.title
+                a.btn.btn-danger(href=`/standards/${standard.id}/delete`) delete
+
     .container
         form(action="/standards" method="POST")
             .form-group
                 label(for='new-standard') Add a standard
-                input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='Title for the standard you are adding' name='standard')
+                input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='Title for the standard you are adding' name='title' required)
                 small#new-standard-help.form-text.text-muted You will add the competencies in the next step
             button.btn.btn-primary Add

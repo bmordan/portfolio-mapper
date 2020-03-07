@@ -1,15 +1,14 @@
 nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  a.navbar-brand(href='#') Portfolio Mapper
+  a.navbar-brand(href='/') Portfolio Mapper
   button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
     span.navbar-toggler-icon
-  if user
-    #navbarSupportedContent.collapse.navbar-collapse
-      ul.navbar-nav.mr-auto
-        li.nav-item.active
-          a.nav-link(href='/standards')
-            | Standards 
-            span.sr-only (current)
-        li.nav-item
-          a.nav-link(href='/cohorts') Cohorts
-      .form-inline.my-2.my-lg-0
-        button.btn.btn-outline-primary.my-2.my-sm-0(onclick='signOut()') Signout
+  #navbarSupportedContent.collapse.navbar-collapse
+    ul.navbar-nav.mr-auto
+      li.nav-item.active
+        a.nav-link(href='/standards')
+          | Standards 
+          span.sr-only (current)
+      li.nav-item
+        a.nav-link(href='/cohorts') Cohorts
+    .form-inline.my-2.my-lg-0
+      button.btn.btn-outline-primary.my-2.my-sm-0(onclick='signOut()') Signout

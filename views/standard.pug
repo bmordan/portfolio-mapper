@@ -1,0 +1,23 @@
+extends layout.pug
+
+block content
+    .container
+        h1=standard.title
+        each competency in competencies
+            ul.list-group.list-group-horizontal
+                li.list-group-item=competency.tag
+                li.list-group-item.flex-fill=competency.desc
+                li.list-group-item
+                    a.btn.btn-warning(href=`/standards/${standard.id}/competencies/${competency.id}/edit` disabled='true') edit
+                li.list-group-item
+                    a.btn.btn-danger(href=`/standards/${standard.id}/competencies/${competency.id}/delete`) delete
+    .container.mt-4
+        form(action=`/standards/${standard.id}/competencies` method='POST')
+            .form-group
+                label(for='new-competency-tag') Add a tag
+                input#new-competency-tag.form-control(placeholder='Add a tag you will use in your comments i.e [AWE34]' name='tag' required)
+            .form-group
+                label(for='new-competency-desc') Add a description
+                textarea#new-competency-desc.form-control(placeholder='competency description' name='desc' required)
+            button.btn.btn-primary Add competency
+        a(href=`/standards`) back
