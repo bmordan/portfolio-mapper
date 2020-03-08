@@ -23,12 +23,18 @@ const session_settings = {
     saveUninitialized: true
 }
 
+// const sequelize_settings = {
+//     host: 'localhost',
+//     dialect: 'mariadb'
+//
+
 const sequelize_settings = {
-    host: 'localhost',
-    dialect: 'mariadb'
+    dialect: 'sqlite',
+    storage: './db.sqlite'
 }
 
 const datastore = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, sequelize_settings)
+
 const {
     Standard,
     Competency,
@@ -82,90 +88,171 @@ app.get('/cohorts/:id_token', async (req, res) => {
         const googleUser = await getGoogleUser(req.params.id_token)
         req.session.user = new User(googleUser)
         res.redirect('/cohorts') 
-    } catch(err) {
-        res.send(err)
+    } catch(error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID})
     }
 })
 
 app.post('/standards', protect, async (req, res) => {
-    const standard = await Standard.create(req.body)
-    res.render('standard', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standard: standard,
-        competencies: []
-    })
+    try {
+        const standard = await Standard.create(req.body)
+        res.render('standard', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standard: standard,
+            competencies: []
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 }) 
 
 app.get('/standards/:id/delete', protect, async (req, res) => {
-    const standard = await Standard.findByPk(req.params.id)
-    await standard.destroy()
-    const standards = await Standard.findAll()
-    res.render('standards', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standards: standards
-    })
+    try {
+        const standard = await Standard.findByPk(req.params.id)
+        await standard.destroy()
+        const standards = await Standard.findAll()
+        res.render('standards', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standards: standards
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.get(['/standards/:id', '/standards/:id/competencies'], protect, async (req, res) => {
-    const standard = await Standard.findByPk(req.params.id)
-    const competencies = await standard.getCompetencies()
-    res.render('standard', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standard: standard,
-        competencies: competencies
-    }) 
+    try {
+        const standard = await Standard.findByPk(req.params.id)
+        const competencies = await standard.getCompetencies()
+        res.render('standard', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standard: standard,
+            competencies: competencies
+        }) 
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.get('/standards', protect, async (req, res) => {
-    const standards = await Standard.findAll()
-    res.render('standards', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standards: standards
-    })
+    try {
+        const standards = await Standard.findAll()
+        res.render('standards', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standards: standards
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.post('/standards/:id/competencies', async (req, res) => {
-    const standard = await Standard.findByPk(req.params.id)
-    const competency = await Competency.create(req.body)
-    await standard.addCompetency(competency)
-    const competencies = await standard.getCompetencies()
-    res.render('standard', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standard: standard,
-        competencies: competencies
-    })
+    try {
+        const standard = await Standard.findByPk(req.params.id)
+        const competency = await Competency.create(req.body)
+        await standard.addCompetency(competency)
+        const competencies = await standard.getCompetencies()
+        res.render('standard', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standard: standard,
+            competencies: competencies
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, async (req, res) => {
-    const competency = await Competency.findByPk(req.params.comptency_id)
-    await competency.destroy()
-    const standard = await Standard.findByPk(req.params.standard_id)
-    const competencies = await standard.getCompetencies()
-    res.render('standard', {
-        user: req.session.user,
-        client_id: GOOGLE_CLIENT_ID,
-        standard: standard,
-        competencies: competencies
-    })
+    try {
+        const competency = await Competency.findByPk(req.params.comptency_id)
+        await competency.destroy()
+        const standard = await Standard.findByPk(req.params.standard_id)
+        const competencies = await standard.getCompetencies()
+        res.render('standard', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            standard: standard,
+            competencies: competencies
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.get('/cohorts', protect, async (req, res) => {
-    const cohorts = await Cohort.findAll({where: {coach: req.session.user.email}})
-    const standards = await Standard.findAll()
-    res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID, cohorts, standards})
+    try {
+        const cohorts = await Cohort.findAll({where: {coach: req.session.user.email}})
+        const standards = await Standard.findAll()
+        const apprentices = await Promise.all(cohorts.map(cohort => cohort.getApprentices()))
+        res.render('cohorts', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            cohorts: cohorts,
+            standards: standards,
+            apprentices: apprentices.flat()
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
+})
+
+app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, res) => {
+    try {
+        const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
+        const standard = await Standard.findByPk(req.params.cohort_id)
+        const competencies = await standard.getCompetencies()
+        res.render('apprentice', {
+            user: req.session.user,
+            client_id: GOOGLE_CLIENT_ID,
+            apprentice: apprentice,
+            standard: standard,
+            competencies: competencies
+        })
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.post('/cohorts', protect, async (req, res) => {
-    const standard = await Standard.findByPk(req.body.standard_id)
-    const cohort = await Cohort.create({title: req.body.title, coach: req.session.user.email})
-    await standard.addCohort(cohort)
-    const standards = await Standard.findAll()
-    res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID, cohorts, standards})
+    try {
+        const standard = await Standard.findByPk(req.body.standard_id)
+        const cohort = await Cohort.create({title: req.body.title, coach: req.session.user.email})
+        await standard.addCohort(cohort)
+        res.redirect('/cohorts')
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
+})
+
+app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
+    try {
+        const cohort = await Cohort.findByPk(req.params.id)
+        const apprentice = await Apprentice.create({
+            name: req.body.name,
+            fileId: req.body.fileId,
+            progress: 0,
+            mapping: "{}"
+        })
+        await cohort.addApprentice(apprentice)
+        res.redirect('/cohorts')
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
+})
+
+app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async (req, res) => {
+    try {
+        const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
+        await apprentice.update({fileId: req.body.fileId})
+        res.redirect('/cohorts')
+    } catch(error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
 })
 
 app.get('/logout', (req, res) => {

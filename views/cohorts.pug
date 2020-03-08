@@ -3,8 +3,40 @@ extends layout.pug
 block content
     if cohorts.length
         .container.my-4
-            each cohort in cohorts
-                .list-group-item=cohort.title
+            h1 Your Cohorts
+            nav
+                #nav-tab.nav.nav-tabs
+                    each cohort in cohorts
+                        a.nav-link(id=`${cohort.title.split(' ').join('-')}-tab` data-toggle='tab' href=`#nav-${cohort.title.split(' ').join('-')}` role="tab" aria-controls=`nav-${cohort.title.split(' ').join('-')}`)=cohort.title
+            .tab-content
+                each cohort in cohorts
+                    .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.split(' ').join('-')}` role="tabpanel" aria-labelledby=`${cohort.title.split(' ').join('-')}-tab`)
+                        ul.list-group.mb-4
+                            each apprentice in apprentices
+                                li.list-group-item
+                                    if (!apprentice.fileId)
+                                        | #{apprentice.name}
+                                        form.d-inline(action=`/cohorts/${cohort.id}/apprentices/${apprentice.id}/update` method='POST')
+                                            input#apprentice-fileId.mx-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here' style='transform:translate(0,2px);')
+                                            button.btn.btn-primary link portfolio
+                                    else
+                                        a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
+                        form.bg-light.p-4(action=`/cohorts/${cohort.id}/apprentices` method='POST')
+                            h2 Add an apprentice to this cohort
+                            .form-group
+                                label(for='apprentice-name') Apprentice Name
+                                input#apprentice-name.form-control(required name='name')
+                            .form-group
+                                label(for='apprentice-fileId') Portfolio <strong>fileId</strong>
+                                input#apprentice-fileId.ml-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here, you can do this later')
+                            button.btn.btn-primary Add Apprentice
+            script.
+                $('#nav-tab a').first().tab('show')
+                $('#nav-tab a').on('click', function (e) {
+                    e.preventDefault()
+                    $(this).tab('show')
+                })
+    hr
     .container
         form(action='/cohorts' method='POST')
             .form-group

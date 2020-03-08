@@ -8,8 +8,6 @@ block content
                 li.list-group-item=competency.tag
                 li.list-group-item.flex-fill=competency.desc
                 li.list-group-item
-                    a.btn.btn-warning(href=`/standards/${standard.id}/competencies/${competency.id}/edit` disabled='true') edit
-                li.list-group-item
                     a.btn.btn-danger(href=`/standards/${standard.id}/competencies/${competency.id}/delete`) delete
     .container.mt-4
         form(action=`/standards/${standard.id}/competencies` method='POST')

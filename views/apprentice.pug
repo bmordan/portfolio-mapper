@@ -1,0 +1,13 @@
+extends layout.pug
+
+block content
+    .container.py-4
+        h1.text-muted=standard.title
+        h2=apprentice.name
+        .container
+            each competency in competencies
+                .row
+                    .col-4=competency.desc
+                    .col-8
+                        each thing in [1,2,3]
+                            .badge.badge-success.mr-1=thing
