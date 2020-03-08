@@ -22,29 +22,29 @@ block content
                                     else
                                         a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
                         form.bg-light.p-4(action=`/cohorts/${cohort.id}/apprentices` method='POST')
-                            h2 Add an apprentice to this cohort
-                            .form-group
+                            .form-group.w-50.mx-auto
+                                h2 Add an apprentice to this cohort
                                 label(for='apprentice-name') Apprentice Name
                                 input#apprentice-name.form-control(required name='name')
-                            .form-group
+                            .form-group.w-50.mx-auto
                                 label(for='apprentice-fileId') Portfolio <strong>fileId</strong>
                                 input#apprentice-fileId.ml-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here, you can do this later')
-                            button.btn.btn-primary Add Apprentice
+                                button.btn.btn-primary.float-right Add Apprentice
             script.
                 $('#nav-tab a').first().tab('show')
                 $('#nav-tab a').on('click', function (e) {
                     e.preventDefault()
                     $(this).tab('show')
                 })
-    hr
-    .container
-        form(action='/cohorts' method='POST')
+    .container-fluid.bg-light.p-4.border-top
+        form(action='/cohorts' method='POST').w-50.mx-auto
             .form-group
-                label(for='new-cohort') Create a cohort
+                h2(for='new-cohort') Create a cohort
                 input#new-standard.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
                 small#new-cohort-help.form-text.text-muted You will add apprentices to this cohort in the next step
             .form-group
-                select.custom-select(name='standard_id')
+                select.custom-select(name='standard_id' aria-describedby='select-standard-help')
                     each standard in standards
                         option(value=standard.id)=standard.title
+                small#select-standard-help.form-text.text-muted Select the standard the cohort will be measured against
             button.btn.btn-primary Create

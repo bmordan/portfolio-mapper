@@ -8,10 +8,12 @@ block content
                 a(href=`/standards/${standard.id}`)=standard.title
                 a.btn.btn-danger(href=`/standards/${standard.id}/delete`) delete
 
-    .container
-        form(action="/standards" method="POST")
+    .container-fluid.bg-light.p-4.border-top
+        form(action="/standards" method="POST").w-50.mx-auto
             .form-group
                 label(for='new-standard') Add a standard
                 input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='Title for the standard you are adding' name='title' required)
                 small#new-standard-help.form-text.text-muted You will add the competencies in the next step
             button.btn.btn-primary Add
+    .container.pt-2
+        a.btn.btn-link(href=`/cohorts`) Back
