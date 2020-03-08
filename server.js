@@ -31,7 +31,9 @@ const sequelize_settings = {
 const datastore = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, sequelize_settings)
 const {
     Standard,
-    Competency
+    Competency,
+    Cohort,
+    Apprentice
 } = createModels(datastore)
 
 app.set('view engine', 'pug')
@@ -75,20 +77,14 @@ app.get('/', (req, res) => {
         : res.render('login', {client_id: GOOGLE_CLIENT_ID})
 })
 
-app.get('/cohorts/:id_token', (req, res) => {
-    getGoogleUser(req.params.id_token)
-        .then(googleUser => {
-            req.session.user = new User(googleUser)
-            res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID})
-        })
-        .catch(err => {
-            console.error(err)
-            res.redirect('/')
-        }) 
-})
-
-app.get('/cohorts', protect, (req, res) => {
-    res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID})
+app.get('/cohorts/:id_token', async (req, res) => {
+    try {
+        const googleUser = await getGoogleUser(req.params.id_token)
+        req.session.user = new User(googleUser)
+        res.redirect('/cohorts') 
+    } catch(err) {
+        res.send(err)
+    }
 })
 
 app.post('/standards', protect, async (req, res) => {
@@ -101,20 +97,15 @@ app.post('/standards', protect, async (req, res) => {
     })
 }) 
 
-app.get('/standards/:id/delete', protect, (req, res) => {
-    Standard.findByPk(req.params.id)
-        .then(standard => standard.destroy())
-        .then(() => Standard.findAll())
-        .then(standards => {
-            res.render('standards', {
-                user: req.session.user,
-                client_id: GOOGLE_CLIENT_ID,
-                standards: standards
-            })
-        })
-        .catch(err => {
-            res.send(err)
-        })
+app.get('/standards/:id/delete', protect, async (req, res) => {
+    const standard = await Standard.findByPk(req.params.id)
+    await standard.destroy()
+    const standards = await Standard.findAll()
+    res.render('standards', {
+        user: req.session.user,
+        client_id: GOOGLE_CLIENT_ID,
+        standards: standards
+    })
 })
 
 app.get(['/standards/:id', '/standards/:id/competencies'], protect, async (req, res) => {
@@ -161,6 +152,20 @@ app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, as
         standard: standard,
         competencies: competencies
     })
+})
+
+app.get('/cohorts', protect, async (req, res) => {
+    const cohorts = await Cohort.findAll({where: {coach: req.session.user.email}})
+    const standards = await Standard.findAll()
+    res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID, cohorts, standards})
+})
+
+app.post('/cohorts', protect, async (req, res) => {
+    const standard = await Standard.findByPk(req.body.standard_id)
+    const cohort = await Cohort.create({title: req.body.title, coach: req.session.user.email})
+    await standard.addCohort(cohort)
+    const standards = await Standard.findAll()
+    res.render('cohorts', {user: req.session.user, client_id: GOOGLE_CLIENT_ID, cohorts, standards})
 })
 
 app.get('/logout', (req, res) => {

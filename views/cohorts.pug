@@ -1,6 +1,18 @@
 extends layout.pug
 
 block content
+    if cohorts.length
+        .container.my-4
+            each cohort in cohorts
+                .list-group-item=cohort.title
     .container
-        h1 Cohorts
-        p=user.name
+        form(action='/cohorts' method='POST')
+            .form-group
+                label(for='new-cohort') Create a cohort
+                input#new-standard.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
+                small#new-cohort-help.form-text.text-muted You will add apprentices to this cohort in the next step
+            .form-group
+                select.custom-select(name='standard_id')
+                    each standard in standards
+                        option(value=standard.id)=standard.title
+            button.btn.btn-primary Create
