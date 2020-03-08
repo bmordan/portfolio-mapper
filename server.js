@@ -186,15 +186,18 @@ app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, as
 
 app.get('/cohorts', protect, async (req, res) => {
     try {
-        const cohorts = await Cohort.findAll({where: {coach: req.session.user.email}})
+        const _cohorts = await Cohort.findAll({where: {coach: req.session.user.email}})
         const standards = await Standard.findAll()
-        const apprentices = await Promise.all(cohorts.map(cohort => cohort.getApprentices()))
+        const cohorts = await Promise.all(_cohorts.map(async cohort => {
+            cohort.apprentices = await cohort.getApprentices()
+            cohort.apprentices = cohort.apprentices.flat()
+            return cohort
+        }))
         res.render('cohorts', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
             cohorts: cohorts,
-            standards: standards,
-            apprentices: apprentices.flat()
+            standards: standards
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
@@ -204,7 +207,8 @@ app.get('/cohorts', protect, async (req, res) => {
 app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, res) => {
     try {
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
-        const standard = await Standard.findByPk(req.params.cohort_id)
+        const cohort = await Cohort.findByPk(req.params.cohort_id)
+        const standard = await cohort.getStandard()
         const competencies = await standard.getCompetencies()
         res.render('apprentice', {
             user: req.session.user,

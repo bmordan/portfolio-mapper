@@ -12,7 +12,7 @@ block content
                 each cohort in cohorts
                     .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.split(' ').join('-')}` role="tabpanel" aria-labelledby=`${cohort.title.split(' ').join('-')}-tab`)
                         ul.list-group.mb-4
-                            each apprentice in apprentices
+                            each apprentice in cohort.apprentices
                                 li.list-group-item
                                     if (!apprentice.fileId)
                                         | #{apprentice.name}
