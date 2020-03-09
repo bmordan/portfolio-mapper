@@ -13,7 +13,8 @@ block content
                         p.mb-0=competency.desc
                     .col-8.p-2.border.d-flex.align-items-center
                         each reference in mapping[competency.tag]
-                            a(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank').badge.badge-success.mr-1.p-1=reference.content.replace(competency.tag, '').substring(0, 16)
+                            a(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank').badge.badge-success.mr-1.p-1
+                                | #{new Date(reference.modifiedTime).toGMTString()}
     hr
     .container
         a.btn.btn-link(href=`/cohorts`) Back
