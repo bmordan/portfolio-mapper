@@ -6,6 +6,7 @@ const fetch = require('node-fetch')
 const app = express()
 const User = require('./lib/User')
 const createModels = require('./lib/Models')
+const createMapping = require('./lib/createMapping')
 
 const {
     GOOGLE_CLIENT_ID,
@@ -71,6 +72,14 @@ async function getGoogleUser(token) {
         && Number(exp) > Math.floor(new Date().getTime()/1000)
         && hd === "whitehat.org.uk"
         && payload
+}
+
+function getProgress(mapping) {
+    const tags = Object.keys(mapping)
+    const competencyScore = 100 / tags.length
+    return tags.reduce((progress, tag) => {
+        return mapping[tag].length ? progress : progress - competencyScore
+    }, 100)
 }
 
 function protect (req, res, next) {
@@ -210,12 +219,15 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
         const cohort = await Cohort.findByPk(req.params.cohort_id)
         const standard = await cohort.getStandard()
         const competencies = await standard.getCompetencies()
+        const mapping = await createMapping(competencies, apprentice.fileId)
+        await apprentice.update({progress: getProgress(mapping)})
         res.render('apprentice', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
             apprentice: apprentice,
             standard: standard,
-            competencies: competencies
+            competencies: competencies,
+            mapping: mapping
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})

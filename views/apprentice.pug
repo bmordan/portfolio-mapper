@@ -4,13 +4,16 @@ block content
     .container.py-4
         h1.text-muted=standard.title
         h2=apprentice.name
+        include progress.pug
         .container
             each competency in competencies
-                .row
-                    .col-4=competency.desc
-                    .col-8
-                        each thing in [1,2,3]
-                            .badge.badge-success.mr-1=thing
+                .row.mb-1
+                    .col-4.p-2.border
+                        strong=competency.tag
+                        p.mb-0=competency.desc
+                    .col-8.p-2.border.d-flex.align-items-center
+                        each reference in mapping[competency.tag]
+                            a(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank').badge.badge-success.mr-1.p-1=reference.content.replace(competency.tag, '').substring(0, 16)
     hr
     .container
         a.btn.btn-link(href=`/cohorts`) Back
