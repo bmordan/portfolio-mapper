@@ -1,5 +1,19 @@
 version: "3"
 services:
+    papper:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+            GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+            DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
+            DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     db:
         image: mariadb
         ports:

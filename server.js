@@ -3,6 +3,7 @@ const express = require('express')
 const session = require('express-session')
 const Sequelize = require('sequelize')
 const fetch = require('node-fetch')
+const md = require('jstransformer')(require('jstransformer-markdown-it')) 
 const app = express()
 const User = require('./lib/User')
 const createModels = require('./lib/Models')
@@ -24,15 +25,17 @@ const session_settings = {
     saveUninitialized: true
 }
 
-// const sequelize_settings = {
-//     host: 'localhost',
-//     dialect: 'mariadb'
-//
+const sequelize_settings_prod = {
+    host: 'localhost',
+    dialect: 'mariadb'
+}
 
-const sequelize_settings = {
+const sequelize_settings_dev = {
     dialect: 'sqlite',
     storage: './db.sqlite'
 }
+
+const sequelize_settings = NODE_ENV === 'development' ? sequelize_settings_dev : sequelize_settings_prod
 
 const datastore = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, sequelize_settings)
 
@@ -227,7 +230,8 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
             apprentice: apprentice,
             standard: standard,
             competencies: competencies,
-            mapping: mapping
+            mapping: mapping,
+            md: md
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
