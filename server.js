@@ -142,7 +142,8 @@ app.get(['/standards/:id', '/standards/:id/competencies'], protect, async (req, 
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
             standard: standard,
-            competencies: competencies
+            competencies: competencies,
+            md: md
         }) 
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
@@ -192,6 +193,16 @@ app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, as
             competencies: competencies
         })
     } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+    }
+})
+
+app.post('/standards/:standard_id/competencies/:comptency_id/update', protect, async (req, res) => {
+    try {
+        const competency = await Competency.findByPk(req.params.comptency_id)
+        await competency.update(req.body)
+        res.redirect(`/standards/${req.params.standard_id}`)
+    } catch(error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }
 })

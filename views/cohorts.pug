@@ -28,7 +28,7 @@ block content
                                                 include progress.pug
                         form.bg-light.p-4(action=`/cohorts/${cohort.id}/apprentices` method='POST')
                             .form-group.w-50.mx-auto
-                                h2 Add an apprentice to this cohort
+                                h4 Add an apprentice to #{cohort.title}
                                 label(for='apprentice-name') Apprentice Name
                                 input#apprentice-name.form-control(required name='name')
                             .form-group.w-50.mx-auto
