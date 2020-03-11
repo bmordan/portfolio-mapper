@@ -2,12 +2,12 @@ extends layout.pug
 include modal.pug
 
 block content
-    .container
+    .container.pt-4
         h1=standard.title
         each competency in competencies
             ul.list-group.list-group-horizontal.mb-1
                 li.list-group-item.w-30=competency.tag
-                li.list-group-item.flex-fill!=md.render(competency.desc).body
+                li.list-group-item.flex-fill!=md.render(competency.desc)
                 li.list-group-item
                     a.btn.btn-danger.d-block(href=`/standards/${standard.id}/competencies/${competency.id}/delete`) delete
                     button.btn.btn-warning.mt-1(type='button' data-toggle='modal' data-target='#modal' style='width:68.63px' onclick=`edit(${standard.id}, ${competency.id}, "${encodeURIComponent(competency.desc)}")`) edit

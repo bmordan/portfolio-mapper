@@ -14,6 +14,10 @@ services:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
+            DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
+        depends_on:
+            - db
     db:
         image: mariadb
         ports:

@@ -6,27 +6,24 @@ html
         script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous")
         script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous")
         meta(name="google-signin-client_id" content=client_id)
-        script(src="https://apis.google.com/js/platform.js" async defer)
+        script(src="https://apis.google.com/js/platform.js?onload=onloadgapi" async defer)
         script.
+            let signOut
+            
+            const client_id = document.querySelector('meta[name="google-signin-client_id"]').content
+            
             function onSignIn(googleUser) {
-                console.log(googleUser)
                 const id_token = googleUser.getAuthResponse().id_token
                 window.location.assign(`/cohorts/${id_token}`)
             }
-            function signOut() {
+            window.onloadgapi = () => {
                 gapi.load('auth2', () => {
-                    const client_id = document.querySelector('meta[name="google-signin-client_id"]').content
-                    
-                    gapi.auth2.init({client_id})
-                        .then(googleUser => {
-                            googleUser.signOut()
-                                .then(() => {
-                                    console.log('signed out')
-                                    return window.location.assign('/logout')
-                                })
-                                .catch(console.error)
-                        })
-                        .catch(console.error)
+                    signOut = () => {
+                        gapi.auth2.init({client_id})
+                            .then(googleUser => googleUser.signOut())
+                            .then(() => window.location.assign('/'))
+                            .catch(console.error)
+                    }
                 })
             }
     body

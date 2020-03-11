@@ -3,7 +3,8 @@ const express = require('express')
 const session = require('express-session')
 const Sequelize = require('sequelize')
 const fetch = require('node-fetch')
-const md = require('jstransformer')(require('jstransformer-markdown-it')) 
+const {OAuth2Client} = require('google-auth-library')
+const md = require('markdown-it')()
 const app = express()
 const User = require('./lib/User')
 const createModels = require('./lib/Models')
@@ -26,8 +27,16 @@ const session_settings = {
 }
 
 const sequelize_settings_prod = {
-    host: 'localhost',
-    dialect: 'mariadb'
+    host: 'db',
+    dialect: 'mariadb',
+    dialectOptions: {
+        timezone: 'Etc/GMT0'
+    },
+    pool: {
+        min: 0,
+        max: 2,
+        idle: 10000
+    }
 }
 
 const sequelize_settings_dev = {
@@ -61,6 +70,7 @@ async function getGoogleUser(token) {
             .catch(console.err)
         payload = ticket
     } else {
+        const gapi = new OAuth2Client(GOOGLE_CLIENT_ID)
         const ticket = await gapi.verifyIdToken({
             idToken: token,
             audience: GOOGLE_CLIENT_ID
@@ -99,7 +109,8 @@ app.get('/cohorts/:id_token', async (req, res) => {
     try {
         const googleUser = await getGoogleUser(req.params.id_token)
         req.session.user = new User(googleUser)
-        res.redirect('/cohorts') 
+        const standards = await Standard.findAll()
+        !standards.length ? res.redirect('/standards') : res.redirect('/cohorts') 
     } catch(error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID})
     }
@@ -168,13 +179,7 @@ app.post('/standards/:id/competencies', async (req, res) => {
         const standard = await Standard.findByPk(req.params.id)
         const competency = await Competency.create(req.body)
         await standard.addCompetency(competency)
-        const competencies = await standard.getCompetencies()
-        res.render('standard', {
-            user: req.session.user,
-            client_id: GOOGLE_CLIENT_ID,
-            standard: standard,
-            competencies: competencies
-        })
+        res.redirect(`/standard/${req.params.id}`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }

@@ -10,7 +10,7 @@ block content
                 .row.mb-1
                     .col-4.p-2.border
                         strong=competency.tag
-                        p.mb-0!=md.render(competency.desc).body
+                        p.mb-0!=md.render(competency.desc)
                     .col-8.p-2.border.d-flex.align-items-center
                         each reference in mapping[competency.tag]
                             a(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank').badge.badge-success.mr-1.p-1
