@@ -179,7 +179,7 @@ app.post('/standards/:id/competencies', async (req, res) => {
         const standard = await Standard.findByPk(req.params.id)
         const competency = await Competency.create(req.body)
         await standard.addCompetency(competency)
-        res.redirect(`/standard/${req.params.id}`)
+        res.redirect(`/standards/${req.params.id}`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }
