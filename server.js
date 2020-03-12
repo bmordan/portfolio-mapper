@@ -27,7 +27,7 @@ const session_settings = {
 }
 
 const sequelize_settings_prod = {
-    host: 'db',
+    host: 'mariadb',
     dialect: 'mariadb',
     dialectOptions: {
         timezone: 'Etc/GMT0'
@@ -297,7 +297,7 @@ app.get('/logout', (req, res) => {
 })
 
 datastore.sync().then(() => {
-    app.listen(3000, () => {
+    app.listen(3030, () => {
         console.log(`Portfolio Mapper running...`)
     })
 })
