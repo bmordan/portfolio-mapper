@@ -11,10 +11,12 @@ block content
                     .col-4.p-2.border
                         strong=competency.tag
                         p.mb-0!=md.render(competency.desc)
-                    .col-8.p-2.border.d-flex.align-items-center
+                    .col-8.px-2.pb-2.pt-1.border.d-flex-wrap.align-items-center
                         each reference in mapping[competency.tag]
-                            a(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank').badge.badge-success.mr-1.p-1
+                            - const ownerbadge = reference.author.displayName === user.name ? 'success' : 'warning'
+                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}`)
                                 | #{new Date(reference.modifiedTime).toGMTString()}
     hr
     .container
         a.btn.btn-link(href=`/cohorts`) Back
+

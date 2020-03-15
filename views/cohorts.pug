@@ -1,4 +1,5 @@
 extends layout.pug
+include popover.pug
 
 block content
     if cohorts.length
@@ -19,6 +20,7 @@ block content
                                         form.d-inline(action=`/cohorts/${cohort.id}/apprentices/${apprentice.id}/update` method='POST')
                                             input#apprentice-fileId.mx-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here' style='transform:translate(0,2px);')
                                             button.btn.btn-primary link portfolio
+                                        small.form-text.text-muted remember You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
                                     else
                                         .d-flex.align-items-center
                                             a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
@@ -27,14 +29,17 @@ block content
                                             .flex-fill
                                                 include progress.pug
                         form.bg-light.p-4(action=`/cohorts/${cohort.id}/apprentices` method='POST')
-                            .form-group.w-50.mx-auto
+                            .form-group.w-75.mx-auto
                                 h4 Add an apprentice to #{cohort.title}
                                 label(for='apprentice-name') Apprentice Name
                                 input#apprentice-name.form-control(required name='name')
-                            .form-group.w-50.mx-auto
-                                label(for='apprentice-fileId') Portfolio <strong>fileId</strong>
-                                input#apprentice-fileId.ml-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here, you can do this later')
-                                button.btn.btn-primary.float-right Add Apprentice
+                            .form-group.w-75.mx-auto.d-flex.align-items-center
+                                label.mb-0(for='apprentice-fileId') Portfolio <strong>fileId</strong>
+                                +popthis('What is the fileId?', '<p>This is the document id. You can find this in the URL of the google doc you are linking to. For example in the following URL the fileId is in bold:<br /><br/>https://docs.google.com/document/d/<strong>11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs</strong>/view#heading=h.eigyo7xsddl3<br/><br/>So you need to paste 11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs in here.')
+                                input#apprentice-fileId.ml-1.mr-2.w-50.pl-2.flex-fill(name='fileId' placeholder='paste the fileId here, you can do this later')
+                                button.btn.btn-primary Add Apprentice
+                            .form-group.w-75.mx-auto
+                                small.form-text.text-muted You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
             script.
                 $('#nav-tab a').first().tab('show')
                 $('#nav-tab a').on('click', function (e) {

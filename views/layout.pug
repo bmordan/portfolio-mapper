@@ -7,6 +7,10 @@ html
         script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous")
         meta(name="google-signin-client_id" content=client_id)
         script(src="https://apis.google.com/js/platform.js?onload=onloadgapi" async defer)
+        style.
+            .popover {
+                max-width: 476px;
+            }
         script.
             let signOut
             
@@ -29,3 +33,7 @@ html
     body
         include navbar
         block content
+        script.
+            $(function () {$('[data-toggle="popover"]').popover({
+                container: 'body'
+            })})

@@ -225,7 +225,8 @@ app.get('/cohorts', protect, async (req, res) => {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
             cohorts: cohorts,
-            standards: standards
+            standards: standards,
+            md: md
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
@@ -297,7 +298,8 @@ app.get('/logout', (req, res) => {
 })
 
 datastore.sync().then(() => {
-    app.listen(3030, () => {
-        console.log(`Portfolio Mapper running...`)
+    const PORT = NODE_ENV === 'development' ? 3000 : 3030
+    app.listen(PORT, () => {
+        console.log(`Papper running on ${PORT}`)
     })
 })
