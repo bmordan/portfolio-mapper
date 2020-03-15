@@ -1,11 +1,11 @@
-mixin modal(title)
-    #modal.modal.fade(tabindex='-1', role='dialog', aria-labelledby=`modalLabel`, aria-hidden='true')
+mixin modal(title, id = 'modal')
+    .modal.fade(id=id, tabindex='-1', role='dialog', aria-labelledby=`modalLabel`, aria-hidden='true')
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-content
                 .modal-header
                     h5#modalLabel.modal-title=title
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                     span(aria-hidden='true') &times;
-                .modal-body
+                .modal-body.bg-light
                     block
 

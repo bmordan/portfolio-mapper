@@ -2,17 +2,36 @@ extends layout.pug
 include modal.pug
 
 block content
+    style.
     .container.pt-4
-        h1=standard.title
+        .row.border-bottom
+            .col-12
+                h1=standard.title
         each competency in competencies
-            ul.list-group.list-group-horizontal.mb-1
-                li.list-group-item.w-30=competency.tag
-                li.list-group-item.flex-fill!=md.render(competency.desc)
-                li.list-group-item
-                    a.btn.btn-danger.d-block(href=`/standards/${standard.id}/competencies/${competency.id}/delete`) delete
-                    button.btn.btn-warning.mt-1(type='button' data-toggle='modal' data-target='#modal' style='width:68.63px' onclick=`edit(${standard.id}, ${competency.id}, "${encodeURIComponent(competency.desc)}")`) edit
-    .container-fluid.mt-4.p-4.bg-light.border-top
-        form(action=`/standards/${standard.id}/competencies` method='POST').w-50.mx-auto
+            .row.border-bottom
+                .col-sm-12.col-md-2.p-2
+                    strong=competency.tag
+                .col-sm-12.col-md-9.p-2!=md.render(competency.desc)
+                .col-sm-12.col-md-1.p-2.d-flex.flex-md-column.align-items-center.justify-content-between
+                    button.btn.btn-warning.mb-2(type='button' data-toggle='modal' data-target=`#edit-${competency.id}` style='width:68.63px') edit
+                    a.d-block(href=`/standards/${standard.id}/competencies/${competency.id}/delete`)
+                        button.btn.btn-danger delete
+                    +modal('Edit Competency', `edit-${competency.id}`)
+                        form(action=`/standards/${standard.id}/competencies/${competency.id}/update` method='POST')
+                            - const id = `edit-competency-${competency.id}`
+                            .form-group
+                                label(labelFor=id) description
+                                textarea(id=id).form-control(name='desc' rows='9')=competency.desc
+                            .form-group
+                                button.btn.btn-secondary(type='button', data-dismiss='modal') Close
+                                button.btn.btn-primary.ml-2(type='submit') Save changes
+        .row
+            .col-12.p-4
+                button.btn.btn-primary(data-toggle='modal' data-target='#add-competency') Add a Competency
+    .container.pt-2.pb-4
+        a(href=`/standards`) back
+    +modal('Add a Competency', 'add-competency')
+        form(action=`/standards/${standard.id}/competencies` method='POST').w-75.mx-auto
             .form-group
                 label(for='new-competency-tag') Add a tag
                 input#new-competency-tag.form-control(placeholder='Add a tag you will use in your comments i.e #communication' name='tag' required)
@@ -20,22 +39,3 @@ block content
                 label(for='new-competency-desc') Add a description
                 textarea#new-competency-desc.form-control(placeholder='competency description' name='desc' required)
             button.btn.btn-primary Add competency
-    .container.pt-2
-        a(href=`/standards`) back
-    +modal('Edit competency')
-        form#edit-form(action=`/` method='POST')
-            .form-group
-                label(labelFor='edit-competency') description
-                textarea#edit-competency.form-control(name='desc' rows='9')
-            .form-group
-                button.btn.btn-secondary(type='button', data-dismiss='modal') Close
-                button.btn.btn-primary.ml-2(type='submit') Save changes
-    script.
-        function edit (standard_id, competency_id, competency) {
-            $('#edit-competency').text(decodeURIComponent(competency))
-            $('#edit-form').attr('action', `/standards/${standard_id}/competencies/${competency_id}/update`)
-        }
-        $('#modal').on('hidden.bs.modal', function () {
-            $('#edit-competency').text('')
-            $('#edit-form').attr('action', '')            
-        })

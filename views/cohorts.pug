@@ -1,57 +1,69 @@
 extends layout.pug
 include popover.pug
+include modal.pug
 
 block content
-    if cohorts.length
-        .container.my-4
-            h1 Your Cohorts
-            nav
-                #nav-tab.nav.nav-tabs
-                    each cohort in cohorts
-                        a.nav-link(id=`${cohort.title.split(' ').join('-')}-tab` data-toggle='tab' href=`#nav-${cohort.title.split(' ').join('-')}` role="tab" aria-controls=`nav-${cohort.title.split(' ').join('-')}`)=cohort.title
-            .tab-content
+    .container.my-4
+        h1 Your Cohorts
+        nav
+            style.
+                .nav-tabs .nav-link.active {
+                    background-color: var(--light);
+                    color: var(--primary);
+                    font-weight: 600;
+                }
+            #nav-tab.nav.nav-tabs
                 each cohort in cohorts
-                    .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.split(' ').join('-')}` role="tabpanel" aria-labelledby=`${cohort.title.split(' ').join('-')}-tab`)
-                        ul.list-group.mb-4
-                            each apprentice in cohort.apprentices
-                                li.list-group-item
-                                    if (!apprentice.fileId)
-                                        | #{apprentice.name}
-                                        form.d-inline(action=`/cohorts/${cohort.id}/apprentices/${apprentice.id}/update` method='POST')
-                                            input#apprentice-fileId.mx-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here' style='transform:translate(0,2px);')
-                                            button.btn.btn-primary link portfolio
-                                        small.form-text.text-muted remember You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
-                                    else
-                                        .d-flex.align-items-center
-                                            a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
-                                            a.mr-4.ml-3(href=`https://docs.google.com/document/d/${apprentice.fileId}/` target='_Blank')
-                                                img(src='/google-docs-icon-2.svg' width='16' alt='google docs')
-                                            .flex-fill
-                                                include progress.pug
-                        form.bg-light.p-4(action=`/cohorts/${cohort.id}/apprentices` method='POST')
-                            .form-group.w-75.mx-auto
-                                h4 Add an apprentice to #{cohort.title}
-                                label(for='apprentice-name') Apprentice Name
-                                input#apprentice-name.form-control(required name='name')
-                            .form-group.w-75.mx-auto.d-flex.align-items-center
-                                label.mb-0(for='apprentice-fileId') Portfolio <strong>fileId</strong>
-                                +popthis('What is the fileId?', '<p>This is the document id. You can find this in the URL of the google doc you are linking to. For example in the following URL the fileId is in bold:<br /><br/>https://docs.google.com/document/d/<strong>11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs</strong>/view#heading=h.eigyo7xsddl3<br/><br/>So you need to paste 11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs in here.')
-                                input#apprentice-fileId.ml-1.mr-2.w-50.pl-2.flex-fill(name='fileId' placeholder='paste the fileId here, you can do this later')
-                                button.btn.btn-primary Add Apprentice
-                            .form-group.w-75.mx-auto
-                                small.form-text.text-muted You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
-            script.
-                $('#nav-tab a').first().tab('show')
-                $('#nav-tab a').on('click', function (e) {
-                    e.preventDefault()
-                    $(this).tab('show')
-                })
-    .container-fluid.bg-light.p-4.border-top
-        form(action='/cohorts' method='POST').w-50.mx-auto
+                    a.nav-link(id=`${cohort.title.split(' ').join('-')}-tab` data-toggle='tab' href=`#nav-${cohort.title.split(' ').join('-')}` role="tab" aria-controls=`nav-${cohort.title.split(' ').join('-')}`)=cohort.title
+                a.nav-link(data-toggle='modal' data-target='#modal' href='' role='tab') Create a Cohort
+        .tab-content
+            each cohort in cohorts
+                .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.split(' ').join('-')}` role="tabpanel" aria-labelledby=`${cohort.title.split(' ').join('-')}-tab`)
+                    ul.list-group.mb-4
+                        each apprentice in cohort.apprentices
+                            li.list-group-item
+                                if (!apprentice.fileId)
+                                    | #{apprentice.name}
+                                    form.d-inline(action=`/cohorts/${cohort.id}/apprentices/${apprentice.id}/update` method='POST')
+                                        input#apprentice-fileId.mx-2.w-50.pl-2(name='fileId' placeholder='paste the fileId here' style='transform:translate(0,2px);')
+                                        button.btn.btn-primary link portfolio
+                                    small.form-text.text-muted remember You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
+                                else
+                                    .d-flex.align-items-center
+                                        a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
+                                        a.mr-4.ml-3(href=`https://docs.google.com/document/d/${apprentice.fileId}/` target='_Blank')
+                                            img(src='/google-docs-icon-2.svg' width='16' alt='google docs')
+                                        .flex-fill
+                                            include progress.pug
+                        li.list-group-item
+                            button.btn.btn-primary(data-toggle='modal' data-target=`#modal-add-apprentice-to-cohort-${cohort.id}`) Add an Apprentice
+                +modal(`Add an apprentice to ${cohort.title}`, `modal-add-apprentice-to-cohort-${cohort.id}`)
+                    form.w-75.mx-auto(action=`/cohorts/${cohort.id}/apprentices` method='POST')
+                        .form-group
+                            label(for='apprentice-name') Apprentice Name
+                            input#apprentice-name.form-control(required name='name')
+                        .form-group
+                            label(for='apprentice-fileId') Portfolio <strong>file ID</strong>
+                            +popthis('What is the file ID?', '<p>This is the document id. You can find this in the URL of the google doc you are linking to. For example in the following URL the fileId is in bold:<br /><br/>https://docs.google.com/document/d/<strong>11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs</strong>/view#heading=h.eigyo7xsddl3<br/><br/>So you need to paste 11RA7rRU5hGLf5B43hgJdcRSjSlH-54w1p9wPXA7UmPs in here.')
+                            input#apprentice-fileId.form-control(name='fileId' placeholder='paste the file ID here, you can do this later')
+                        .form-group
+                            button.btn.btn-primary Add Apprentice
+                            small.form-text.text-muted You will need to share the document with
+                                br
+                                strong papper@portfolio-mapper.iam.gserviceaccount.com
+        script.
+            window.location.hash ? $(`[href="${window.location.hash}"]`).tab('show') : $('#nav-tab a').first().tab('show')
+            $('#nav-tab a').on('click', function (e) {
+                e.preventDefault()
+                if ($(this).attr('href') !== '') { $(this).tab('show') }
+                window.location.hash = $(this).attr('href')
+            })
+    +modal('Create a Cohort')
+        form(action='/cohorts' method='POST').w-75.mx-auto
             .form-group
-                h2(for='new-cohort') Create a cohort
-                input#new-standard.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
-                small#new-cohort-help.form-text.text-muted You will add apprentices to this cohort in the next step
+                label(for='new-cohort') Title
+                input#new-cohort.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
+                small#new-cohort-help.form-text.text-muted You will add apprentices to this Cohort in the next step
             .form-group
                 select.custom-select(name='standard_id' aria-describedby='select-standard-help')
                     each standard in standards
