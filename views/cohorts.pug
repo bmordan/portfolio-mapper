@@ -8,8 +8,9 @@ block content
         nav
             style.
                 .nav-tabs .nav-link.active {
-                    background-color: var(--primary);
-                    color: var(--light);
+                    background-color: var(--light);
+                    color: var(--primary);
+                    font-weight: 600;
                 }
             #nav-tab.nav.nav-tabs
                 each cohort in cohorts
@@ -60,7 +61,8 @@ block content
     +modal('Create a Cohort')
         form(action='/cohorts' method='POST').w-75.mx-auto
             .form-group
-                input#new-standard.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
+                label(for='new-cohort') Title
+                input#new-cohort.form-control(aria-describedby='new-cohort-help' placeholder='Title for your new cohort' name='title' required)
                 small#new-cohort-help.form-text.text-muted You will add apprentices to this Cohort in the next step
             .form-group
                 select.custom-select(name='standard_id' aria-describedby='select-standard-help')
