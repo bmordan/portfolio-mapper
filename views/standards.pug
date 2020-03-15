@@ -1,18 +1,20 @@
 extends layout.pug
+include modal.pug
 
 block content
     .container.mb-4
         ul.list-group.my-4
-        each standard in standards
+            each standard in standards
+                li.list-group-item.d-flex.justify-content-between.align-items-center
+                    a(href=`/standards/${standard.id}`)=standard.title
+                    a.btn.btn-danger(href=`/standards/${standard.id}/delete`) delete
             li.list-group-item.d-flex.justify-content-between.align-items-center
-                a(href=`/standards/${standard.id}`)=standard.title
-                a.btn.btn-danger(href=`/standards/${standard.id}/delete`) delete
-
-    .container-fluid.bg-light.p-4.border-top
-        form(action="/standards" method="POST").w-50.mx-auto
+                button.btn.btn-primary(data-toggle='modal' data-target='#modal') Add a Standard
+    +modal('Add a Standard')
+        form(action="/standards" method="POST").w-75.mx-auto
             .form-group
-                label(for='new-standard') Add a standard
-                input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='Title for the standard you are adding' name='title' required)
+                label(for='new-standard') Title for the Standard
+                input#new-standard.form-control(aria-describedby='new-standard-help' placeholder='i.e BCS Software Enginnering Level 4' name='title' required)
                 small#new-standard-help.form-text.text-muted You will add the competencies in the next step
             button.btn.btn-primary Add
     .container.pt-2

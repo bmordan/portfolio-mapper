@@ -260,7 +260,7 @@ app.post('/cohorts', protect, async (req, res) => {
         const standard = await Standard.findByPk(req.body.standard_id)
         const cohort = await Cohort.create({title: req.body.title, coach: req.session.user.email})
         await standard.addCohort(cohort)
-        res.redirect('/cohorts')
+        res.redirect(`/cohorts#nav-${req.body.title.split(' ').join('-')}`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }
@@ -276,7 +276,7 @@ app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
             mapping: "{}"
         })
         await cohort.addApprentice(apprentice)
-        res.redirect('/cohorts')
+        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }
@@ -284,9 +284,10 @@ app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
 
 app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async (req, res) => {
     try {
+        const cohort = await Cohort.findByPk(req.params.cohort_id)
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
         await apprentice.update({fileId: req.body.fileId})
-        res.redirect('/cohorts')
+        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
     } catch(error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
     }
