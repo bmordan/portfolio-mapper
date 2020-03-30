@@ -1,6 +1,6 @@
 {
   "name": "portfolio-mapper",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "how much of the standard had been covered in an apprentices portfolio?",
   "main": "index.js",
   "scripts": {
