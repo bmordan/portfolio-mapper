@@ -295,7 +295,8 @@ app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async
 
 app.get('/logout', (req, res) => {
     req.session.user = undefined
-    res.redirect('/')
+    console.log('user logged out')
+    res.send('logged out')
 })
 
 datastore.sync().then(() => {

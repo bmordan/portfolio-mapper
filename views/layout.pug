@@ -12,8 +12,7 @@ html
                 max-width: 476px;
             }
         script.
-            let signOut
-            
+            let signOut;
             const client_id = document.querySelector('meta[name="google-signin-client_id"]').content
             
             function onSignIn(googleUser) {
@@ -25,15 +24,18 @@ html
                     signOut = () => {
                         gapi.auth2.init({client_id})
                             .then(googleUser => googleUser.signOut())
+                            .then(() => fetch('/logout'))
                             .then(() => window.location.assign('/'))
                             .catch(console.error)
                     }
+                    document.getElementById('signOut').setAttribute('onclick', 'signOut()')
                 })
             }
     body
         include navbar
         block content
         script.
-            $(function () {$('[data-toggle="popover"]').popover({
-                container: 'body'
-            })})
+            $(function () {
+                $('[data-toggle="popover"]').popover({container: 'body'})
+                $('[data-toggle="tooltip"]').tooltip()
+            })

@@ -1,4 +1,5 @@
 extends layout.pug
+include popover.pug
 
 block content
     .container.py-4
@@ -9,13 +10,13 @@ block content
             each competency in competencies
                 .row.mb-1
                     .col-4.p-2.border
-                        strong=competency.tag
-                        p.mb-0!=md.render(competency.desc)
+                        button.btn(data-toggle="collapse" data-target=competency.tag class=`btn-${mapping[competency.tag].length ? "info" : "danger"}`)=competency.tag
+                        .collapse.pt-2(id=competency.tag.substring(1))!=md.render(competency.desc)
                     .col-8.px-2.pb-2.pt-1.border.d-flex-wrap.align-items-center
                         each reference in mapping[competency.tag]
                             - const ownerbadge = reference.author.displayName === user.name ? 'success' : 'warning'
-                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}`)
-                                | #{new Date(reference.modifiedTime).toGMTString()}
+                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent.value)
+                                | #{new Date(reference.modifiedTime).toGMTString().substring(0,11)}
     hr
     .container
         a.btn.btn-link(href=`/cohorts`) Back
