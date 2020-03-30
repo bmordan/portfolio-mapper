@@ -9,6 +9,7 @@ const app = express()
 const User = require('./lib/User')
 const createModels = require('./lib/Models')
 const createMapping = require('./lib/createMapping')
+const {version} = require('./package.json')
 
 const {
     GOOGLE_CLIENT_ID,
@@ -102,7 +103,7 @@ function protect (req, res, next) {
 app.get('/', (req, res) => {
     req.session.user
         ? res.redirect('/cohorts')
-        : res.render('login', {client_id: GOOGLE_CLIENT_ID})
+        : res.render('login', {client_id: GOOGLE_CLIENT_ID, version})
 })
 
 app.get('/cohorts/:id_token', async (req, res) => {
@@ -112,7 +113,7 @@ app.get('/cohorts/:id_token', async (req, res) => {
         const standards = await Standard.findAll()
         !standards.length ? res.redirect('/standards') : res.redirect('/cohorts') 
     } catch(error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, version})
     }
 })
 
@@ -126,7 +127,7 @@ app.post('/standards', protect, async (req, res) => {
             competencies: []
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 }) 
 
@@ -138,10 +139,11 @@ app.get('/standards/:id/delete', protect, async (req, res) => {
         res.render('standards', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
+            version: version,
             standards: standards
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -153,11 +155,12 @@ app.get(['/standards/:id', '/standards/:id/competencies'], protect, async (req, 
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
             standard: standard,
+            version: version,
             competencies: competencies,
             md: md
         }) 
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -167,10 +170,11 @@ app.get('/standards', protect, async (req, res) => {
         res.render('standards', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
+            version: version,
             standards: standards
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -181,7 +185,7 @@ app.post('/standards/:id/competencies', async (req, res) => {
         await standard.addCompetency(competency)
         res.redirect(`/standards/${req.params.id}`)
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -194,11 +198,12 @@ app.get('/standards/:standard_id/competencies/:comptency_id/delete', protect, as
         res.render('standard', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
+            version: version,
             standard: standard,
             competencies: competencies
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -208,7 +213,7 @@ app.post('/standards/:standard_id/competencies/:comptency_id/update', protect, a
         await competency.update(req.body)
         res.redirect(`/standards/${req.params.standard_id}`)
     } catch(error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -224,12 +229,13 @@ app.get('/cohorts', protect, async (req, res) => {
         res.render('cohorts', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
+            version: version,
             cohorts: cohorts,
             standards: standards,
             md: md
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -244,6 +250,7 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
         res.render('apprentice', {
             user: req.session.user,
             client_id: GOOGLE_CLIENT_ID,
+            version: version,
             apprentice: apprentice,
             standard: standard,
             competencies: competencies,
@@ -251,7 +258,7 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
             md: md
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -262,7 +269,7 @@ app.post('/cohorts', protect, async (req, res) => {
         await standard.addCohort(cohort)
         res.redirect(`/cohorts#nav-${req.body.title.split(' ').join('-')}`)
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -278,7 +285,7 @@ app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
         await cohort.addApprentice(apprentice)
         res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -289,7 +296,7 @@ app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async
         await apprentice.update({fileId: req.body.fileId})
         res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
     } catch(error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
 })
 
@@ -302,6 +309,6 @@ app.get('/logout', (req, res) => {
 datastore.sync().then(() => {
     const PORT = NODE_ENV === 'development' ? 3000 : 3030
     app.listen(PORT, () => {
-        console.log(`Papper running on ${PORT}`)
+        console.log(`Papper v${version} running on ${PORT}`)
     })
 })
