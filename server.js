@@ -300,6 +300,17 @@ app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async
     }
 })
 
+app.get('/cohorts/:cohort_id/apprentices/:apprentice_id/delete', protect, async (req, res) => {
+    try {
+        const cohort = await Cohort.findByPk(req.params.cohort_id)
+        const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
+        await apprentice.destroy()
+        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
+    } catch (err) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
+    }
+})
+
 app.get('/logout', (req, res) => {
     req.session.user = undefined
     console.log('user logged out')
