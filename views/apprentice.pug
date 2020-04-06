@@ -15,8 +15,9 @@ block content
                     .col-8.px-2.pb-2.pt-1.border.d-flex-wrap.align-items-center
                         each reference in mapping[competency.tag]
                             - const ownerbadge = reference.author.displayName === user.name ? 'success' : 'warning'
-                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent.value)
-                                | #{new Date(reference.modifiedTime).toGMTString().substring(0,11)}
+                            - const oneOfn = reference.content.search(/\d\sof\s\d/)
+                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent && reference.quotedFileContent.value || "no textual content")
+                                | #{oneOfn > -1 ? reference.content.substring(oneOfn, oneOfn + 6) : competency.tag}
     hr
     .container
         a.btn.btn-link(href=`/cohorts`) Back
