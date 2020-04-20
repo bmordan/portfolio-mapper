@@ -239,7 +239,7 @@ app.get('/cohorts', protect, async (req, res) => {
     }
 })
 
-app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, res) => {
+app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', async (req, res) => {
     try {
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
         const cohort = await Cohort.findByPk(req.params.cohort_id)
@@ -248,7 +248,7 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
         const mapping = await createMapping(competencies, apprentice.fileId)
         await apprentice.update({progress: getProgress(mapping)})
         res.render('apprentice', {
-            user: req.session.user,
+            user: req.session.user || {name: false},
             client_id: GOOGLE_CLIENT_ID,
             version: version,
             apprentice: apprentice,
@@ -258,7 +258,7 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', protect, async (req, r
             md: md
         })
     } catch (error) {
-        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user || {name: false}, version})
     }
 })
 

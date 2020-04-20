@@ -20,5 +20,6 @@ block content
                                 | #{oneOfn > -1 ? reference.content.substring(oneOfn, oneOfn + 6) : competency.tag}
     hr
     .container
-        a.btn.btn-link(href=`/cohorts`) Back
+        if user.name
+            a.btn.btn-link(href=`/cohorts`) Back
 
