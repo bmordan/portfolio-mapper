@@ -1,0 +1,39 @@
+extends layout.pug
+
+block content
+    .container.mt-4.mb-5.w-50.mx-auto
+        h1 Getting Started
+        p First of all you need to make sure your standard has been created. If you dont see the standard for your programme in the list you will need to add it. Give the standard a title and begin to add competencies.
+        hr
+        h2 Adding competencies
+        p A competency can be copy and pasted from a pdf, and given a #tag. For example:
+        p
+            img(src="https://user-images.githubusercontent.com/4499581/79870579-19abfe00-83db-11ea-8423-d26304fea4d7.png" width="100%")
+        p You might want as a team to decide what to use as a tag for each competency. Can you see in the example above the bullet points are rendered using the "*" characture. This is <a href="https://www.markdownguide.org/getting-started/" target="_blank">markdown</a>. Once you have created tags and discriptions for the standard you are ready to start adding cohorts.
+        hr
+        h2 Adding Cohorts
+        p It is upto you how you name your cohorts. Follow the prompts to add apprentices. You will be able to navigate between all your apprentices in a tab styled panel like this.
+        p
+            img(src="https://user-images.githubusercontent.com/4499581/79871138-d9994b00-83db-11ea-95e1-4edd6067d6ff.png" width="100%")
+        p The progress bar will only be calculated once you have visited your apprentices individual page. You can click on the document icon next to your apprentices name to view their portfolio. If you make a mistake or need to remove an apprentice you can use the 'delete' ⌫ button.
+        hr
+        h2 Linking Portfolios
+        p Once you apprentice is added you need to link their portfolio document. Get them to share the document with you and Papper. Below is an example of the sharing settings. Can you see Papper's email address? He just needs read only permissions.
+        p papper@portfolio-mapper.iam.gserviceaccount.com
+        p
+            img(src="https://user-images.githubusercontent.com/4499581/79871598-7cea6000-83dc-11ea-904d-dd1003cc9297.png" width="100%")
+        p To link the portfolio to Papper you need the #[strong fileid] from the Google doc URL. See below. Be careful, you want the long alphanumeric between the two forward slashes "/". Here is the fileid we need highlighted
+        p
+        | https://docs.google.com/document/d/#[mark(style="background-color:yellow;") 1b1IsepNLkFBHocDoS64Q09IW9T0KwZiIMZsgKjGKSok]/edit#heading=h.srn2mpd14zdh
+        hr
+        h2 Tagging
+        p You are in business. If you think a section of your apprentices portfolio addresses a competency then highlight it add a comment and tag it.
+        p
+            img(src="https://user-images.githubusercontent.com/4499581/79877900-b757fb00-83e4-11ea-8872-bfb74c12f2ed.png" width="100%")
+        p Interestingly you can see this example is tagged with #[strong #business] it's then followed by "1 of 2" because the business competency has two bullet points, and this statement by this apprentice demonstrates, the first. This helps keep track of competencies that have multiple parts to them.
+        p Now you have tagged a part of the portfolio you can see the tag on the matrix. If you click on the tag button in the left column it will reveal the competency. If you hover over the tag you'll see a snipet from the document (should be enough to remind you of context), if your tag is followed by #[i n of n] that will be displayed in the tag. Click on the tag to goto that comment in the original document.
+        p
+            img(src="https://user-images.githubusercontent.com/4499581/79881007-a01b0c80-83e8-11ea-8db1-daf2cf040a78.gif" width="100%")
+        p.mb-5.pb-5 If you have questions/issues you can contact me here #[a(href="mailto:bernard.mordan@whitehat.org.uk?subject=Question about using Papper") bernard.mordan@whitehat.org.uk]
+
+

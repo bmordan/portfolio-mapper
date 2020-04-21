@@ -106,6 +106,10 @@ app.get('/', (req, res) => {
         : res.render('login', {client_id: GOOGLE_CLIENT_ID, version})
 })
 
+app.get('/help', (req, res) => {
+    res.render('help', {client_id: GOOGLE_CLIENT_ID, version})
+})
+
 app.get('/cohorts/:id_token', async (req, res) => {
     try {
         const googleUser = await getGoogleUser(req.params.id_token)
