@@ -1,5 +1,7 @@
 # Portfolio Mapper
 
+![screen grab](https://user-images.githubusercontent.com/4499581/79871138-d9994b00-83db-11ea-95e1-4edd6067d6ff.png)
+
 You need some google credentials
 
 ```json
