@@ -31,8 +31,10 @@ block content
                                 else
                                     .d-flex.align-items-center
                                         a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
-                                        a.mr-4.ml-3(href=`https://docs.google.com/document/d/${apprentice.fileId}/` target='_Blank')
+                                        a.ml-3.mr-2(href=`https://docs.google.com/document/d/${apprentice.fileId}/` target='_Blank')
                                             img(src='/google-docs-icon-2.svg' width='16' alt='google docs')
+                                        a.m-1(href=`/apprentices/${apprentice.id}/epa-status?mock=1&status=${!apprentice.mocks > 0}&cohort=${cohort.title.split(' ').join('-')}` style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 0 ? 0 : 100}%);`) &#x1F3C5;
+                                        a.ml-1.mr-3(href=`/apprentices/${apprentice.id}/epa-status?mock=2&status=${apprentice.mocks === 1}&cohort=${cohort.title.split(' ').join('-')}` style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 1 ? 0 : 100}%);`) &#x1F396;
                                         .flex-fill
                                             include progress.pug
                                         button.btn.btn-link.text-danger(data-toggle='modal' data-target=`#delete-apprentice-${apprentice.id}`) ⌫
