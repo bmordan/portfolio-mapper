@@ -266,18 +266,16 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id', async (req, res) => {
     }
 })
 
-app.get('/apprentices/:apprentice_id/epa-status', async (req, res) => {
+app.get('/apprentices/:apprentice_id/epa-mocks', async (req, res) => {
     try {
         const {mock, status, cohort} = req.query
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
-        console.log({mock, status, cohort})
         if (mock === '1') {
             apprentice.mocks = status === 'true' ? 1 : 0
         } else if (mock === '2' && apprentice.mocks > 0) {
             apprentice.mocks = status === 'true' ? 2 : 1
         }
         await apprentice.save()
-        console.log(apprentice.name, apprentice.mocks)
         res.redirect(`/cohorts#nav-${cohort}`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user || {name: false}, version})

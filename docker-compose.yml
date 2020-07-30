@@ -1,24 +1,24 @@
 version: "3"
 services:
-    # papper:
-    #     build:
-    #         context: .
-    #         dockerfile: Dockerfile
-    #     ports:
-    #         - "3000:3000"
-    #     environment:
-    #         GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-    #         GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-    #         DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
-    #         DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
-    #         MYSQL_DATABASE: ${MYSQL_DATABASE}
-    #         MYSQL_USER: ${MYSQL_USER}
-    #         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    #         DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
-    #         DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
-    #     depends_on:
-    #         - db
-    db:
+    papper:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "3030:3030"
+        environment:
+            GOOGLE_CLIENT_ID: ${PAPPER_GOOGLE_CLIENT_ID}
+            GOOGLE_CLIENT_SECRET: ${PAPPER_GOOGLE_CLIENT_SECRET}
+            DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
+            DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            DRIVE_CLIENT_EMAIL: ${DRIVE_CLIENT_EMAIL}
+            DRIVE_PRIVATE_KEY: ${DRIVE_PRIVATE_KEY}
+        depends_on:
+            - mariadb
+    mariadb:
         image: mariadb
         ports:
             - "3306:3306"
