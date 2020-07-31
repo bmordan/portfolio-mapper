@@ -30,7 +30,7 @@ block content
                                     small.form-text.text-muted remember You will need to also share the document with #[strong papper@portfolio-mapper.iam.gserviceaccount.com]
                                 else
                                     .d-flex.align-items-center
-                                        a(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
+                                        a.w-25(href=`/cohorts/${cohort.id}/apprentices/${apprentice.id}`)=apprentice.name
                                         a.ml-3.mr-2(
                                             href=`https://docs.google.com/document/d/${apprentice.fileId}/`
                                             target='_Blank'
@@ -40,17 +40,17 @@ block content
                                             img(src='/google-docs-icon-2.svg' width='16' alt='google docs')
                                         a.m-1.text-decoration-none(
                                             href=`/apprentices/${apprentice.id}/epa-mocks?mock=1&status=${!apprentice.mocks > 0}&cohort=${cohort.title.split(' ').join('-')}`
-                                            style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 0 ? 0 : 100}%);`
+                                            style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 0 ? 0 : 100}%);opacity:${apprentice.mocks < 1 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 1 ? "transparent" : "gray"};`
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="Mock EPA 1") &#x1F3C5;
                                         a.ml-1.mr-3.text-decoration-none(
                                             href=`/apprentices/${apprentice.id}/epa-mocks?mock=2&status=${apprentice.mocks === 1}&cohort=${cohort.title.split(' ').join('-')}` 
-                                            style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 1 ? 0 : 100}%);`
+                                            style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 1 ? 0 : 100}%);opacity:${apprentice.mocks < 2 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 2 ? "transparent" : "gray"};`
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="Mock EPA 2") &#x1F396;
-                                        .flex-fill
+                                        .w-75
                                             include progress.pug
                                         button.btn.btn-link.text-danger(data-toggle='modal' data-target=`#delete-apprentice-${apprentice.id}`) ⌫
                                         +modal(`Delete ${apprentice.name.split(' ')[0]}?`, `delete-apprentice-${apprentice.id}`)
