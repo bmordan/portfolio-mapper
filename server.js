@@ -237,8 +237,7 @@ app.get('/cohorts', protect, async (req, res) => {
             version: version,
             cohorts: cohorts,
             standards: standards,
-            md: md,
-            btoa: btoa
+            md: md
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
@@ -305,7 +304,17 @@ app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
             mapping: "{}"
         })
         await cohort.addApprentice(apprentice)
-        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
+        res.redirect(`/cohorts#nav-${cohort.title.replace(/[^\w\d]/g, '')}`)
+    } catch (error) {
+        res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
+    }
+})
+
+app.get('/cohorts/:id/delete', protect, async (req, res) => {
+    try {
+        const cohort = await Cohort.findByPk(req.params.id)
+        cohort.destroy()
+        res.redirect(`/cohorts`)
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
@@ -316,7 +325,7 @@ app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async
         const cohort = await Cohort.findByPk(req.params.cohort_id)
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
         await apprentice.update({fileId: req.body.fileId})
-        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
+        res.redirect(`/cohorts#nav-${cohort.title.replace(/[^\w\d]/g, '')}`)
     } catch(error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
@@ -327,7 +336,7 @@ app.get('/cohorts/:cohort_id/apprentices/:apprentice_id/delete', protect, async 
         const cohort = await Cohort.findByPk(req.params.cohort_id)
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
         await apprentice.destroy()
-        res.redirect(`/cohorts#nav-${cohort.title.split(' ').join('-')}`)
+        res.redirect(`/cohorts#nav-${cohort.title.replace(/[^\w\d]/g, '')}`)
     } catch (err) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})
     }
