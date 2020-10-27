@@ -39,13 +39,13 @@ block content
                                             title="Open Google Doc")
                                             img(src='/google-docs-icon-2.svg' width='16' alt='google docs')
                                         a.m-1.text-decoration-none(
-                                            href=`/apprentices/${apprentice.id}/epa-mocks?mock=1&status=${!apprentice.mocks > 0}&cohort=${cohort.title.split(' ').join('-')}`
+                                            href=`/apprentices/${apprentice.id}/epa-mocks?mock=1&status=${!apprentice.mocks > 0}&cohort=${cohort.title.replace(/[^\w\d]/g, '')}`
                                             style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 0 ? 0 : 100}%);opacity:${apprentice.mocks < 1 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 1 ? "transparent" : "gray"};`
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="Mock EPA 1") &#x1F3C5;
                                         a.ml-1.mr-3.text-decoration-none(
-                                            href=`/apprentices/${apprentice.id}/epa-mocks?mock=2&status=${apprentice.mocks === 1}&cohort=${cohort.title.split(' ').join('-')}` 
+                                            href=`/apprentices/${apprentice.id}/epa-mocks?mock=2&status=${apprentice.mocks === 1}&cohort=${cohort.title.replace(/[^\w\d]/g, '')}` 
                                             style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 1 ? 0 : 100}%);opacity:${apprentice.mocks < 2 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 2 ? "transparent" : "gray"};`
                                             data-toggle="tooltip"
                                             data-placement="top"
