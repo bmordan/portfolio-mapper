@@ -42,7 +42,8 @@ const sequelize_settings_prod = {
 
 const sequelize_settings_dev = {
     dialect: 'sqlite',
-    storage: './db.sqlite'
+    storage: './db.sqlite',
+    logging: false
 }
 
 const sequelize_settings = NODE_ENV === 'development' ? sequelize_settings_dev : sequelize_settings_prod
@@ -236,7 +237,8 @@ app.get('/cohorts', protect, async (req, res) => {
             version: version,
             cohorts: cohorts,
             standards: standards,
-            md: md
+            md: md,
+            btoa: btoa
         })
     } catch (error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})

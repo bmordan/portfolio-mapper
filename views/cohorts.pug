@@ -14,11 +14,11 @@ block content
                 }
             #nav-tab.nav.nav-tabs
                 each cohort in cohorts
-                    a.nav-link(id=`${cohort.title.split(' ').join('-')}-tab` data-toggle='tab' href=`#nav-${cohort.title.split(' ').join('-')}` role="tab" aria-controls=`nav-${cohort.title.split(' ').join('-')}`)=cohort.title
+                    a.nav-link(id=`${cohort.title.replace(/[^\w\d]/g, '')}-tab` data-toggle='tab' href=`#nav-${cohort.title.replace(/[^\w\d]/g, '')}` role="tab" aria-controls=`nav-${cohort.title.replace(/[^\w\d]/g, '')}`)=cohort.title
                 a.nav-link(data-toggle='modal' data-target='#modal' href='' role='tab') Create a Cohort
         .tab-content
             each cohort in cohorts
-                .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.split(' ').join('-')}` role="tabpanel" aria-labelledby=`${cohort.title.split(' ').join('-')}-tab`)
+                .container.tab-pane.fade.pt-4(id=`nav-${cohort.title.replace(/[^\w\d]/g, '')}` role="tabpanel" aria-labelledby=`${cohort.title.replace(/[^\w\d]/g, '')}-tab`)
                     ul.list-group.mb-4
                         each apprentice in cohort.apprentices
                             li.list-group-item
