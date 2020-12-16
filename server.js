@@ -10,6 +10,7 @@ const User = require('./lib/User')
 const createModels = require('./lib/Models')
 const createMapping = require('./lib/createMapping')
 const {version} = require('./package.json')
+const addDoctype = require('./lib/addDoctype')
 
 const {
     GOOGLE_CLIENT_ID,
@@ -301,8 +302,10 @@ app.post('/cohorts/:id/apprentices', protect, async (req, res) => {
             name: req.body.name,
             fileId: req.body.fileId,
             progress: 0,
-            mapping: "{}"
+            mapping: "{}",
+            doctype: 'document'
         })
+        await addDoctype(apprentice)
         await cohort.addApprentice(apprentice)
         res.redirect(`/cohorts#nav-${cohort.title.replace(/[^\w\d]/g, '')}`)
     } catch (error) {
@@ -325,6 +328,7 @@ app.post('/cohorts/:cohort_id/apprentices/:apprentice_id/update', protect, async
         const cohort = await Cohort.findByPk(req.params.cohort_id)
         const apprentice = await Apprentice.findByPk(req.params.apprentice_id)
         await apprentice.update({fileId: req.body.fileId})
+        await addDoctype(apprentice)
         res.redirect(`/cohorts#nav-${cohort.title.replace(/[^\w\d]/g, '')}`)
     } catch(error) {
         res.render('error', {error, client_id: GOOGLE_CLIENT_ID, user: req.session.user, version})

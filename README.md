@@ -23,3 +23,15 @@ You need some google credentials
 2. download the json version of the credentials
 3. require this file in `/lib/createMapping.js`
 4. share documents you'll be mapping with the `client_email` from these settings
+
+## Dump
+
+Connect to the db instance and run the following pair of commands:
+
+```sh
+mysqldump --user=$MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE > YYYY-MM-DD-papper.sql
+```
+and move into portfolio mapper project
+```
+docker cp b866b5ae06dc:/home/2020-12-16-papper.sql ../portfolio-mapper/
+```
