@@ -86,7 +86,7 @@ async function getGoogleUser(token) {
         && (iss === "https://accounts.google.com" || iss === "accounts.google.com")
         && aud === GOOGLE_CLIENT_ID
         && Number(exp) > Math.floor(new Date().getTime()/1000)
-        && hd === "whitehat.org.uk"
+        && (hd === "whitehat.org.uk" || hd === "multiverse.io")
         && payload
 }
 
