@@ -92,10 +92,18 @@ async function getGoogleUser(token) {
 
 function getProgress(mapping) {
     const tags = Object.keys(mapping)
-    const competencyScore = 100 / tags.length
     return tags.reduce((progress, tag) => {
-        return mapping[tag].length ? progress : progress - competencyScore
-    }, 100)
+        let competencyScore
+        if(mapping[tag].tags.length) {
+            const {percentageOfStandard, percentageOfCompetency} = mapping[tag].progress
+            competencyScore = percentageOfCompetency === 100 
+                ? percentageOfStandard 
+                : (percentageOfStandard/100) * percentageOfCompetency
+        } else {
+            competencyScore = 0
+        }
+        return progress + competencyScore
+    }, 0)
 }
 
 function protect (req, res, next) {

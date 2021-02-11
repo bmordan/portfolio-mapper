@@ -10,14 +10,16 @@ block content
             each competency in competencies
                 .row.mb-1
                     .col-4.p-2.border
-                        button.btn(data-toggle="collapse" data-target=competency.tag class=`btn-${mapping[competency.tag].length ? "info" : "danger"}`)=competency.tag
+                        button.btn(data-toggle="collapse" data-target=competency.tag class=`btn-${mapping[competency.tag].tags.length ? "info" : "danger"}` style=mapping[competency.tag].progress.percentageOfCompetency < 100 ? `background-image: linear-gradient(to right, transparent ${mapping[competency.tag].progress.percentageOfCompetency}%, #a9d1d7 ${mapping[competency.tag].progress.percentageOfCompetency}% ${100-mapping[competency.tag].progress.percentageOfCompetency}%);` : '')=competency.tag
                         .collapse.pt-2(id=competency.tag.substring(1))!=md.render(competency.desc)
                     .col-8.px-2.pb-2.pt-1.border.d-flex-wrap.align-items-center
-                        each reference in mapping[competency.tag]
+                        each reference in mapping[competency.tag].tags
                             - const ownerbadge = reference.author.displayName === user.name ? 'success' : 'warning'
-                            - const oneOfn = reference.content.search(/\d\sof\s\d/)
-                            a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent && reference.quotedFileContent.value || "no textual content")
-                                | #{oneOfn > -1 ? reference.content.substring(oneOfn, oneOfn + 6) : competency.tag}
+                            if reference.badges.length
+                                each badge in reference.badges
+                                    a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent && reference.quotedFileContent.value || "no textual content")=badge
+                            else
+                                a.badge.m-1.p-1(href=`https://docs.google.com/document/d/${apprentice.fileId}/view?disco=${reference.id}` target='_Blank' class=`badge-${ownerbadge}` data-toggle="tooltip" data-placement="top" title=reference.quotedFileContent && reference.quotedFileContent.value || "no textual content")=competency.tag
     hr
     .container
         if user.name
