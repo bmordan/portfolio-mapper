@@ -21,7 +21,7 @@ block content
                             - const id = `edit-competency-${competency.id}`
                             .form-group
                                 label(labelFor=id) description
-                                textarea(id=id).form-control(name='desc' rows='9')=competency.desc
+                                textarea.form-control(id=id name='desc' rows='9')=competency.desc
                             .form-group
                                 button.btn.btn-secondary(type='button', data-dismiss='modal') Close
                                 button.btn.btn-primary.ml-2(type='submit') Save changes
