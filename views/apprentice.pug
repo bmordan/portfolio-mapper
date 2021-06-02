@@ -5,6 +5,16 @@ block content
     .container.py-4
         h1.text-muted=standard.title
         h2=apprentice.name
+            a.ml-2.text-decoration-none(
+                style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 0 ? 0 : 100}%);opacity:${apprentice.mocks < 1 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 1 ? "transparent" : "gray"};`
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Award One") &#x1F3C5;
+            a.ml-1.mr-3.text-decoration-none( 
+                style=`font-size:1.5rem;-webkit-filter:grayscale(${apprentice.mocks > 1 ? 0 : 100}%);opacity:${apprentice.mocks < 2 ? 0.2 : 1};text-shadow:1px 1px 2px ${apprentice.mocks < 2 ? "transparent" : "gray"};`
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Award Two") &#x1F396;
         include progress.pug
         .container
             each competency in competencies
